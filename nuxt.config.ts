@@ -1,5 +1,5 @@
 import type { PoolOptions } from 'mysql2/promise';
-import type { SecretRuntimeConfig } from '@/types/models/common';
+import type { SecretRuntimeConfig, MediaRuntimeConfig } from '@/types/models/common';
 
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
@@ -28,6 +28,10 @@ export default defineNuxtConfig({
     },
     secretConfig: <SecretRuntimeConfig>{
       jwtSignKey: process.env.NUXT_JWT_SIGN_KEY
+    },
+    mediaConfig: <MediaRuntimeConfig>{
+      imageDir: process.env.NUXT_IMAGE_STORE_DIR,
+      imagePublicPath: process.env.NUXT_IMAGE_PUBLIC_PATH
     }
   },
   app: {

@@ -36,3 +36,8 @@ export interface DeleteQuery {
 export interface SecretRuntimeConfig {
   jwtSignKey: string;
 }
+
+export interface MediaRuntimeConfig {
+  imageDir: string;
+  imagePublicPath: string;
+}

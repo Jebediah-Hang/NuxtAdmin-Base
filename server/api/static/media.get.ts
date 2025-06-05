@@ -3,17 +3,25 @@ import { resolve } from 'node:path';
 import { createHash } from 'node:crypto';
 import { lookup } from 'mime-types';
 
+type MediaType = 'image';
+
+const { mediaConfig } = useRuntimeConfig();
+
+const mediaDir: Record<MediaType, string> = {
+  image: mediaConfig.imageDir
+};
+
 export default defineEventHandler((event) => {
   try {
-    const { name } : { name: string; } = getQuery(event);
+    const { type, name } : { type: MediaType; name: string; } = getQuery(event);
 
-    const imagePath = resolve(process.cwd(), 'public/images', name);
-    const imageBuffer = readFileSync(imagePath);
+    const filePath = resolve(mediaDir[type], name);
+    const fileBuffer = readFileSync(filePath);
 
-    const etag = `W/"${createHash('md5').update(imageBuffer).digest('hex')}"`;
+    const etag = `W/"${createHash('md5').update(fileBuffer).digest('hex')}"`;
     setHeader(event, 'ETag', etag);
 
-    const mimeType = lookup(imagePath) || undefined;
+    const mimeType = lookup(filePath) || undefined;
     setHeader(event, 'Content-Type', mimeType);
 
     const ifNoneMatch = getHeader(event, 'If-None-Match');
@@ -22,7 +30,7 @@ export default defineEventHandler((event) => {
       setResponseStatus(event, 304);
       return null;
     } else {
-      return imageBuffer;
+      return fileBuffer;
     }
   } catch (error) {
     setResponseStatus(event, 404);

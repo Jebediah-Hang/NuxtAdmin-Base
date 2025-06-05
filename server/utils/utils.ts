@@ -16,6 +16,18 @@ export function dateFormat(date: Date = new Date()): string {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
+export function getDateTimeString(date: Date = new Date(), mill: boolean = true): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  const millis = String(date.getMilliseconds()).padStart(3, '0');
+
+  return `${year}${month}${day}${hours}${minutes}${seconds}${mill ? millis : ''}`;
+}
+
 export function separatePagerQuery<T = any>(params: ApiPageQuery<T>): [ApiPager, T] {
   const query: any = cloneDeep(params);
   const pager: ApiPager = {
