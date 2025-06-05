@@ -1,12 +1,15 @@
+import { escape } from 'mysql2';
+
 type DataObj = Record<string, any>;
+type OrderType = 'ASC' | 'DESC';
 
 function createQueryEqualString(query: DataObj = {}) {
-  const queryField = Object.entries(query).filter(([k, v]) => v);
-  return queryField.map(([k, v]) => `${k} = '${v}'`).join(' AND ');
+  const queryField = Object.entries(query).filter(([k, v]) => typeof v === 'number' ? true : v);
+  return queryField.map(([k, v]) => `${k} = ${escape(v)}`).join(' AND ');
 }
 
 function createQueryLikeString(query: DataObj = {}) {
-  return Object.keys(query).map(k => `${k} LIKE '%${query[k]}%'`).join(' AND ');
+  return Object.keys(query).map(k => `${k} LIKE ${escape(`%${query[k]}%`)}`).join(' AND ');
 }
 
 export class MySqlCreator {
@@ -47,9 +50,9 @@ export class MySqlCreator {
     return `SELECT COUNT(*) FROM ${tbName};`;
   }
 
-  static selectPage(tbName: string, size: number = 10, current: number = 1, order: string = '1') {
+  static selectPage(tbName: string, size: number = 10, current: number = 1, order: string = '1', orderType: OrderType = 'ASC') {
     const offset = (current - 1) * size;
-    return `SELECT * FROM ${tbName} ORDER BY ${order} LIMIT ${size} OFFSET ${offset};`;
+    return `SELECT * FROM ${tbName} ORDER BY ${order} ${orderType} LIMIT ${size} OFFSET ${offset};`;
   }
 
   static selectFieldPage(tbName: string, fields: Array<string>, size: number = 10, current: number = 1) {
@@ -62,10 +65,10 @@ export class MySqlCreator {
     return queryStr ? `SELECT COUNT(*) FROM ${tbName} WHERE ${queryStr};` : this.countAll(tbName);
   }
 
-  static selectEqualPage(tbName: string, size: number = 10, current: number = 1, query: DataObj = {}, order: string = '1') {
+  static selectEqualPage(tbName: string, size: number = 10, current: number = 1, query: DataObj = {}, order: string = '1', orderType: OrderType = 'ASC') {
     const offset = (current - 1) * size;
     const queryStr = createQueryEqualString(query);
-    return queryStr ? `SELECT * FROM ${tbName} WHERE ${queryStr} ORDER BY ${order} LIMIT ${size} OFFSET ${offset};` : this.selectPage(tbName, size, current, order);
+    return queryStr ? `SELECT * FROM ${tbName} WHERE ${queryStr} ORDER BY ${order} ${orderType} LIMIT ${size} OFFSET ${offset};` : this.selectPage(tbName, size, current, order, orderType);
   }
 
   static selectFieldEqualPage(tbName: string, fields: Array<string>, size: number = 10, current: number = 1, query: DataObj = {}) {
@@ -79,10 +82,10 @@ export class MySqlCreator {
     return queryStr ? `SELECT COUNT(*) FROM ${tbName} WHERE ${queryStr};` : this.countAll(tbName);
   }
 
-  static selectLikePage(tbName: string, size: number = 10, current: number = 1, query: DataObj = {}, order: string = '1') {
+  static selectLikePage(tbName: string, size: number = 10, current: number = 1, query: DataObj = {}, order: string = '1', orderType: OrderType = 'ASC') {
     const offset = (current - 1) * size;
     const queryStr = createQueryLikeString(query);
-    return queryStr ? `SELECT * FROM ${tbName} WHERE ${queryStr} ORDER BY ${order} LIMIT ${size} OFFSET ${offset};` : this.selectPage(tbName, size, current, order);
+    return queryStr ? `SELECT * FROM ${tbName} WHERE ${queryStr} ORDER BY ${order} ${orderType} LIMIT ${size} OFFSET ${offset};` : this.selectPage(tbName, size, current, order, orderType);
   }
 
   static selectFieldLikePage(tbName: string, fields: Array<string>, size: number = 10, current: number = 1, query: DataObj = {}) {
@@ -93,12 +96,12 @@ export class MySqlCreator {
 
   static insertOne(tbName: string, data: DataObj = {}) {
     const keyStr = `(${Object.keys(data).join(', ')})`;
-    const valStr = `(${Object.values(data).map(v => typeof v === 'string' ? `'${v}'` : v).join(', ')})`;
+    const valStr = `(${Object.values(data).map(v => escape(v)).join(', ')})`;
     return `INSERT INTO ${tbName} ${keyStr} VALUES ${valStr};`;
   }
 
   static updateOne(tbName: string, id: number, data: DataObj = {}) {
-    const updateStr = Object.keys(data).map(k => `${k} = '${data[k]}'`).join(', ');
+    const updateStr = Object.keys(data).map(k => `${k} = ${escape(data[k])}`).join(', ');
     return `UPDATE ${tbName} SET ${updateStr} WHERE id = ${id};`;
   }
 

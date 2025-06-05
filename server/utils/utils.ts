@@ -16,7 +16,7 @@ export function dateFormat(date: Date = new Date()): string {
   return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
 }
 
-export function separatePagerQuery(params: ApiPageQuery): [ApiPager, any] {
+export function separatePagerQuery<T = any>(params: ApiPageQuery<T>): [ApiPager, T] {
   const query: any = cloneDeep(params);
   const pager: ApiPager = {
     size: query.size ? Number(query.size) : 10,

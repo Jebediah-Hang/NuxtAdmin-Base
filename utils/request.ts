@@ -30,6 +30,8 @@ export async function $request<T = any>(options: FetchOptions): Promise<ApiRespo
         switch (statusCode) {
           case 401:
             ElMessage.error('请求未授权');
+            sessionStorage.removeItem(constantVariable.sessionTokenKey);
+            location.reload();
             break;
           default:
             ElMessage.error(error.message);
