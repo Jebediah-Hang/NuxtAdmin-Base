@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
     });
 
     return ResultJson.success({ total: countResult["COUNT(*)"], current: pager.current, list: listResult });
-  } catch(error) {
+  } catch (error) {
     throw createQueryError(error);
   }
 });

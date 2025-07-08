@@ -13,16 +13,19 @@ const mediaDir: Record<MediaType, string> = {
 
 export default defineEventHandler((event) => {
   try {
-    const { type, name } : { type: MediaType; name: string; } = getQuery(event);
+    const { type, name }: { type: MediaType; name: string; } = getQuery(event);
 
-    const filePath = resolve(mediaDir[type], name);
+    const lastName = <string>name.split(/\\|\//).at(-1);
+    const filePath = resolve(mediaDir[type], lastName);
     const fileBuffer = readFileSync(filePath);
 
     const etag = `W/"${createHash('md5').update(fileBuffer).digest('hex')}"`;
     setHeader(event, 'ETag', etag);
 
-    const mimeType = lookup(filePath) || undefined;
-    setHeader(event, 'Content-Type', mimeType);
+    const mimeType = lookup(filePath);
+    if (mimeType) {
+      setHeader(event, 'Content-Type', mimeType);
+    }
 
     const ifNoneMatch = getHeader(event, 'If-None-Match');
 

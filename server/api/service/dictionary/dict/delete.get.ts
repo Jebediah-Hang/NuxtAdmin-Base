@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   try {
     await MysqlDBPool.query(sql);
     return ResultJson.success(null);
-  } catch(error) {
+  } catch (error) {
     throw createQueryError(error);
   }
 });

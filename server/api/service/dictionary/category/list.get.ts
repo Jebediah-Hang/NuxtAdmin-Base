@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
     const list = listResult.map(item => item.category);
 
     return ResultJson.success([...new Set(list)]);
-  } catch(error) {
+  } catch (error) {
     throw createQueryError(error);
   }
 });
