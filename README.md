@@ -12,9 +12,13 @@ npm install
 
 # pnpm
 pnpm install
-```
 
-To use a database or media storage, you need to create the `.env` file in the project root directory according to the contents of the `.env.example` file.
+# yarn
+yarn install
+
+# bun
+bun install
+```
 
 ## Development Server
 
@@ -26,6 +30,12 @@ npm run dev
 
 # pnpm
 pnpm dev
+
+# yarn
+yarn dev
+
+# bun
+bun run dev
 ```
 
 ## Production
@@ -38,6 +48,12 @@ npm run build
 
 # pnpm
 pnpm build
+
+# yarn
+yarn build
+
+# bun
+bun run build
 ```
 
 Locally preview production build:
@@ -48,6 +64,12 @@ npm run preview
 
 # pnpm
 pnpm preview
+
+# yarn
+yarn preview
+
+# bun
+bun run preview
 ```
 
 Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
