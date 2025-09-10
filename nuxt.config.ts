@@ -6,5 +6,10 @@ export default defineNuxtConfig({
   },
   experimental: {
     decorators: true
+  },
+  runtimeConfig: {
+    mediaConfig: {
+      mediaStoreDir: process.env.NUXT_MEDIA_STORE_DIR
+    }
   }
 });
