@@ -1,19 +1,17 @@
+type TargetMethod<T, A extends Array<any>, R> = (this: T, ...args: A) => R;
+
 export function RequireAuth<T, A extends Array<any>, R>(
-  target: (this: T, ...args: A) => R,
-  ctx: ClassMethodDecoratorContext<T, (this: T, ...args: A) => R>
+  target: TargetMethod<T, A, R>,
+  ctx: ClassMethodDecoratorContext<T, TargetMethod<T, A, R>>
 ) {
-  function auth(this: T, ...args: A): R {
+  async function auth(this: T, ...args: A): Promise<R> {
     const event: H3Event = args[0];
-    const authToken = getHeader(event, "Authorization");
 
-    if (!authToken) {
-      setResponseStatus(event, 401);
-      return <R>ResultJson.failed(401, "Unauthorized");
-    }
+    const userSession = await requireUserSession(event);
+    console.log("auth===>", userSession);
 
-    const res = target.call(this, ...args);
-    return res;
+    return target.call(this, ...args);
   }
 
-  return auth;
+  return <TargetMethod<T, A, R>>auth;
 }

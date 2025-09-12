@@ -15,10 +15,10 @@ export async function $request<T = any>(options: FetchOptions): Promise<ApiRespo
   }
 
   // const token = sessionStorage.getItem(constantVariable.sessionTokenKey);
-  const token = "aaa";
-  if (token) {
-    options.headers.Authorization = `Bearer ${token}`;
-  }
+  // const token = "aaa";
+  // if (token) {
+  //   options.headers.Authorization = `Bearer ${token}`;
+  // }
 
   try {
     const response = await $fetch<ApiResponse>(options.url, options);

@@ -11,5 +11,6 @@ export default defineNuxtConfig({
     mediaConfig: {
       mediaStoreDir: process.env.NUXT_MEDIA_STORE_DIR
     }
-  }
+  },
+  modules: ["nuxt-auth-utils"]
 });
