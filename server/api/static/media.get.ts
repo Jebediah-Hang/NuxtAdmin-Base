@@ -12,9 +12,9 @@ export default defineEventHandler((event) => {
     const lastName = <string>name.split(/\\|\//).at(-1);
     const filePath = resolve(mediaConfig.mediaStoreDir, lastName);
 
-    const imageBuffer = readFileSync(filePath);
+    const fileBuffer = readFileSync(filePath);
 
-    const etag = `W/"${createHash("md5").update(imageBuffer).digest("hex")}"`;
+    const etag = `W/"${createHash("md5").update(fileBuffer).digest("hex")}"`;
     setHeader(event, "ETag", etag);
 
     const mimeType = lookup(filePath) || undefined;
@@ -26,7 +26,7 @@ export default defineEventHandler((event) => {
       setResponseStatus(event, 304);
       return null;
     } else {
-      return imageBuffer;
+      return fileBuffer;
     }
   } catch (error) {
     setResponseStatus(event, 404);

@@ -2,17 +2,28 @@ import type * as Models from "~~/types/common";
 
 declare global {
   type ApiResponse<T = any> = Models.ResponseResult<T>;
-  // type AR =
+
+  type ApiPager = Models.Pager;
+  type ApiPageQuery<T = any> = Models.PageQuery<T>;
+  type ApiPageList<T = any> = Models.PageList<T>;
+
+  type ApiDeleteQuery = Models.DeleteQuery;
+
+  type TableCommonRowData<T = any> = Models.TableCommonRowData<T>;
 }
 
 declare module "#auth-utils" {
   interface User {
-    id: string;
-    name: string;
+    id?: number;
+    username?: string;
+    nickname?: string;
+    phone?: string;
+    email?: string;
   }
 
   interface UserSession {
-    // expiredTime: string;
+    token: string;
+    expiredTime: number;
   }
 
   interface SecureSessionData {}
