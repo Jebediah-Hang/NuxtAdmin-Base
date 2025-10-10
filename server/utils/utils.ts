@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import type { User } from "~~/types/models/user";
 
 export class Constant {
-  static loginValidPeriod = 43200000
+  static loginValidPeriod = 43200000;
 }
 
 export function delay(duration: number) {
@@ -59,7 +59,10 @@ export function hashUserPassword(password: string): string {
 
 export function createJwtToken(user: Partial<User>, expiredTime: number): string {
   const { secretConfig } = useRuntimeConfig();
-  const token = jwt.sign({ randomId: randomUUID(), ...user, expiredTime }, secretConfig.jwtSignKey);
+  const token = jwt.sign(
+    { randomId: randomUUID(), ...user, expiredTime },
+    secretConfig.jwtSignKey
+  );
   return token;
 }
 
@@ -69,4 +72,8 @@ export function verifyJwtToken(token?: string): string | jwt.JwtPayload {
     throw createError("Unauthorized");
   }
   return jwt.verify(token, secretConfig.jwtSignKey);
+}
+
+export function deleteFromObject<T = any>(obj: T, deleteKeys: Array<keyof T>) {
+  deleteKeys.forEach((k) => delete obj[k]);
 }

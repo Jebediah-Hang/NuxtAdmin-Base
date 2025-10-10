@@ -76,10 +76,11 @@ export class UserService {
     const data: User = await readBody(event);
 
     const updateData: TableCommonRowData<User> = {
-      username: data.username,
-      password: hashUserPassword(data.password),
+      ...data,
       updateTime: dateFormat()
     };
+
+    deleteFromObject(updateData, ["id", "username", "password", "createTime"]);
 
     const sql = MySql.updateOne(DBTable.tbUser, data.id, updateData);
 

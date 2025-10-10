@@ -25,5 +25,9 @@ export default defineNuxtConfig({
       database: process.env.NUXT_DB_DATABASE
     }
   },
-  modules: ["nuxt-auth-utils"]
+  modules: ["nuxt-auth-utils", "@element-plus/nuxt"],
+  elementPlus: {
+    defaultLocale: "zh-cn",
+    installMethods: ["ElLoading", "ElMessage", "ElMessageBox", "ElNotification"]
+  }
 });

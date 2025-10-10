@@ -19,21 +19,20 @@ export async function $request<T = any>(options: FetchOptions): Promise<ApiRespo
       if (statusCode) {
         switch (statusCode) {
           case 401:
-            console.log("No Auth !!!");
-            // ElMessage.error('请求未授权');
+            ElMessage.error("Unauthorized");
             const { clear: clearLocalSession } = useUserSession();
-            clearLocalSession();
+            await clearLocalSession();
             // location.reload();
             break;
           default:
-            // ElMessage.error(error.message);
+            ElMessage.error(error.message);
             break;
         }
       } else {
-        // ElMessage.error('Service Unavailable');
+        ElMessage.error("Service Unavailable");
       }
     } else {
-      // ElMessage.error('Unknown Error');
+      ElMessage.error("Unknown Error");
     }
 
     return Promise.reject(error);
