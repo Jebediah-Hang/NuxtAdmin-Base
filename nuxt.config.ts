@@ -7,9 +7,27 @@ export default defineNuxtConfig({
   experimental: {
     decorators: true
   },
+  nitro: {
+    sourceMap: false
+  },
   runtimeConfig: {
+    secretConfig: {
+      jwtSignKey: process.env.NUXT_JWT_SIGN_KEY
+    },
     mediaConfig: {
       mediaStoreDir: process.env.NUXT_MEDIA_STORE_DIR
+    },
+    databaseConfig: {
+      port: process.env.NUXT_DB_PORT,
+      host: process.env.NUXT_DB_HOST,
+      user: process.env.NUXT_DB_USER,
+      password: process.env.NUXT_DB_PASSWORD,
+      database: process.env.NUXT_DB_DATABASE
     }
+  },
+  modules: ["nuxt-auth-utils", "@element-plus/nuxt"],
+  elementPlus: {
+    defaultLocale: "zh-cn",
+    installMethods: ["ElLoading", "ElMessage", "ElMessageBox", "ElNotification"]
   }
 });

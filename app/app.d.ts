@@ -1,6 +1,3 @@
-// import * as Models from "../types/common";
-
-declare global {
-}
+declare global {}
 
 export {};

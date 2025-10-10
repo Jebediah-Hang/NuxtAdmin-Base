@@ -1,3 +1,12 @@
+import { createHash, randomUUID } from "node:crypto";
+import { cloneDeep } from "lodash-es";
+import jwt from "jsonwebtoken";
+import type { User } from "~~/types/models/user";
+
+export class Constant {
+  static loginValidPeriod = 43200000;
+}
+
 export function delay(duration: number) {
   return new Promise<boolean>((resolve) => {
     setTimeout(() => {
@@ -29,4 +38,42 @@ export function formatFileSize(bytes: number) {
   const decimals = Math.max(3 - integerDigits, 0);
 
   return `${sizeValue.toFixed(decimals)} ${sizes[i]}`;
+}
+
+export function separatePagerQuery(params: ApiPageQuery): [ApiPager, any] {
+  const query: any = cloneDeep(params);
+  const pager: ApiPager = {
+    size: query.size ? Number(query.size) : 10,
+    current: query.current ? Number(query.current) : 1
+  };
+
+  delete query.size;
+  delete query.current;
+
+  return [pager, query];
+}
+
+export function hashUserPassword(password: string): string {
+  return createHash("sha256").update(password).digest("hex");
+}
+
+export function createJwtToken(user: Partial<User>, expiredTime: number): string {
+  const { secretConfig } = useRuntimeConfig();
+  const token = jwt.sign(
+    { randomId: randomUUID(), ...user, expiredTime },
+    secretConfig.jwtSignKey
+  );
+  return token;
+}
+
+export function verifyJwtToken(token?: string): string | jwt.JwtPayload {
+  const { secretConfig } = useRuntimeConfig();
+  if (!token) {
+    throw createError("Unauthorized");
+  }
+  return jwt.verify(token, secretConfig.jwtSignKey);
+}
+
+export function deleteFromObject<T = any>(obj: T, deleteKeys: Array<keyof T>) {
+  deleteKeys.forEach((k) => delete obj[k]);
 }
